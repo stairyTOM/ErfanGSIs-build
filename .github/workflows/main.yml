@@ -1,19 +1,9 @@
 name: build
 
 on:
-#  release:
-#    types: [published]
-#  push:
-#    branches:
-#      - master
-#    paths:
-#      - '.config'
-#  schedule:
-#    - cron: 0 8 * * 5
   workflow_dispatch
     
 env:
-  ROM_URL: https://bigota.d.miui.com/V14.0.6.0.TKSINXM/miui_CAMELLIAINGlobal_V14.0.6.0.TKSINXM_3afc727b18_13.0.zip
   ROM_NAME: Generic
   BUILD_TYPE: ab
   TZ: Asia/Shanghai
@@ -50,18 +40,20 @@ jobs:
               sudo apt-get install -y unace unrar zip unzip p7zip-full p7zip-rar sharutils rar uudeview mpack arj cabextract file-roller device-tree-compiler liblzma-dev python3-pip brotli liblz4-tool gawk aria2 || true
               pip3 install --break-system-packages backports.lzma protobuf==3.20.0 pycryptodome || true
               pip3 install backports.lzma protobuf==3.20.0 pycryptodome || true
-              python3 -c 'import google.protobuf' || pip3 install --break-system-packages protobuf==3.20.0 || true
               echo done
               
        - name: Download Stock Rom & Generate GSI
          run: |
              cd $GITHUB_WORKSPACE/ErfanGSIs
-             sudo bash ./url2GSI.sh -c --$BUILD_TYPE $ROM_URL $ROM_NAME
+             wget -q https://github.com/stairyTOM/ErfanGSIs-build/releases/download/romsrc/rom.zip.00
+             wget -q https://github.com/stairyTOM/ErfanGSIs-build/releases/download/romsrc/rom.zip.01
+             cat rom.zip.00 rom.zip.01 > rom.zip
+             sudo bash ./url2GSI.sh -c --$BUILD_TYPE $GITHUB_WORKSPACE/ErfanGSIs/rom.zip $ROM_NAME
       
        - name: Zip GSI  
          run: |
               touch info.txt
-              echo "By mi20210630 developed action" >>info.txt
+              echo "Generic MTK A13 build by stairyTOM" >>info.txt
               cd $GITHUB_WORKSPACE/ErfanGSIs/output
               mkdir upload
               zip -r GSI.zip ./*
