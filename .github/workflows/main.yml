@@ -32,7 +32,8 @@ jobs:
            
        - name: Initialization environment
          run: |
-            sudo apt update && sudo apt install git wget aria2
+            sudo apt-get update
+            sudo apt-get install -y git wget aria2 zip unzip
       
        - name: Clone ErfanGSI Source Code
          run: git clone --recurse-submodules https://github.com/mi20210630/ErfanGSIs.git ErfanGSIs
@@ -46,7 +47,11 @@ jobs:
          run: |
               cd $GITHUB_WORKSPACE/ErfanGSIs
               mkdir ./output
-              sudo bash ./setup.sh
+              sudo apt-get install -y unace unrar zip unzip p7zip-full p7zip-rar sharutils rar uudeview mpack arj cabextract file-roller device-tree-compiler liblzma-dev python3-pip brotli liblz4-tool gawk aria2 || true
+              pip3 install --break-system-packages backports.lzma protobuf==3.20.0 pycryptodome || true
+              pip3 install backports.lzma protobuf==3.20.0 pycryptodome || true
+              python3 -c 'import google.protobuf' || pip3 install --break-system-packages protobuf==3.20.0 || true
+              echo done
               
        - name: Download Stock Rom & Generate GSI
          run: |
