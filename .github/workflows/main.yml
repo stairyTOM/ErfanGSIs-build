@@ -13,7 +13,7 @@ on:
   workflow_dispatch
     
 env:
-  ROM_URL: https://firmware.meizu.com/Firmware/Flyme/16s_Pro/8.1.8.0/cn/20220925143029/569ef7f6/update.zip
+  ROM_URL: https://bigota.d.miui.com/V14.0.6.0.TKSINXM/miui_CAMELLIAINGlobal_V14.0.6.0.TKSINXM_3afc727b18_13.0.zip
   ROM_NAME: Generic
   BUILD_TYPE: ab
   TZ: Asia/Shanghai
@@ -32,8 +32,8 @@ jobs:
            
        - name: Initialization environment
          run: |
-            sudo apt install git wget
-       
+            sudo apt update && sudo apt install git wget aria2
+      
        - name: Clone ErfanGSI Source Code
          run: git clone --recurse-submodules https://github.com/mi20210630/ErfanGSIs.git ErfanGSIs
          
@@ -41,7 +41,7 @@ jobs:
          run: |
               sed -i 's/\|\| exit 1//g' $GITHUB_WORKSPACE/ErfanGSIs/url2GSI.sh
               sed -i 's/exit 1//g' $GITHUB_WORKSPACE/ErfanGSIs/url2GSI.sh
-       
+      
        - name: Setting up ErfanGSI requirements
          run: |
               cd $GITHUB_WORKSPACE/ErfanGSIs
@@ -52,7 +52,7 @@ jobs:
          run: |
              cd $GITHUB_WORKSPACE/ErfanGSIs
              sudo bash ./url2GSI.sh -c --$BUILD_TYPE $ROM_URL $ROM_NAME
-       
+      
        - name: Zip GSI  
          run: |
               touch info.txt
