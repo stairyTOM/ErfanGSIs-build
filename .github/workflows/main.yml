@@ -32,18 +32,21 @@ jobs:
          
        - name: Fix exit
          run: |
-              sed -i 's/\|\| exit 1//g' $GITHUB_WORKSPACE/ErfanGSIs/url2GSI.sh
-              sed -i 's/exit 1//g' $GITHUB_WORKSPACE/ErfanGSIs/url2GSI.sh
+              cd $GITHUB_WORKSPACE/ErfanGSIs
+              sed -i 's/\|\| exit 1//g' url2GSI.sh
+              sed -i 's/exit 1//g' url2GSI.sh
+              chmod +x make.sh url2GSI.sh setup.sh update.sh tools/Firmware_extractor/extractor.sh 2>/dev/null || true
+              chmod +x scripts/*.sh tools/*.sh tools/Firmware_extractor/tools/*/*.py 2>/dev/null || true
       
        - name: Setting up ErfanGSI requirements
          run: |
               cd $GITHUB_WORKSPACE/ErfanGSIs
               mkdir ./output
               sudo apt-get install -y unace unrar zip unzip p7zip-full p7zip-rar sharutils rar uudeview mpack arj cabextract file-roller device-tree-compiler liblzma-dev python3-pip brotli liblz4-tool gawk aria2 || true
-              pip3 install --break-system-packages protobuf==3.20.0 || pip3 install --break-system-packages protobuf
-              pip3 install --break-system-packages pycryptodome || true
-              pip3 install --break-system-packages backports.lzma || true
-              python3 -c 'from google.protobuf import descriptor; print("PROTO_OK")'
+              sudo pip3 install --break-system-packages protobuf==3.20.0 pycryptodome backports.lzma || sudo pip3 install --break-system-packages protobuf pycryptodome backports.lzma || true
+              echo 'PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python' >> $GITHUB_ENV
+              sudo python3 -c 'from google.protobuf import descriptor; print("PROTO_ROOT_OK")'
+              python3 -c 'from google.protobuf import descriptor; print("PROTO_USER_OK")'
               
        - name: Download Stock Rom & Generate GSI
          run: |
