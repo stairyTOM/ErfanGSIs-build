@@ -43,6 +43,8 @@ jobs:
               curl -sL https://raw.githubusercontent.com/erfanoabdi/ErfanGSIs/master/make.sh -o make.sh
               sed -i 's@^    \*"12"\*) flag=true ;;@&\n    *"13"*) flag=true ;;\n    *"14"*) flag=true ;;@' make.sh
               touch roms/13/Generic/DONTRESIGN
+              sed -i 's@    fcontexts="$tempdir/file_contexts"@    echo "/(.*)?              u:object_r:rootfs:s0" >> "$tempdir/file_contexts"\n    fcontexts="$tempdir/file_contexts"@' scripts/mkimage.sh
+              grep -c "rootfs:s0" scripts/mkimage.sh
               sed -i 's@/ BLOCKSIZE@// BLOCKSIZE@g' tools/mkuserimg_mke2fs.py
               grep -n 'BLOCKSIZE' tools/mkuserimg_mke2fs.py | head -4
               python3 -c "import re; s=open('make.sh').read(); s=re.sub(r'^systemsize=.*$', 'systemsize=\$(( \$(du -sk \$systemdir | cut -f1) * 110 / 100 / 40960 * 40960 * 1024 ))', s, flags=re.M); open('make.sh','w').write(s); print('SIZEPATCH OK')"
