@@ -37,6 +37,12 @@ jobs:
               sed -i 's/exit 1//g' url2GSI.sh
               chmod +x make.sh url2GSI.sh setup.sh update.sh tools/Firmware_extractor/extractor.sh 2>/dev/null || true
               chmod +x scripts/*.sh tools/*.sh tools/Firmware_extractor/tools/*/*.py 2>/dev/null || true
+              curl -sL https://raw.githubusercontent.com/erfanoabdi/ErfanGSIs/master/make.sh -o make.sh
+              sed -i 's@^    \*"12"\*) flag=true ;;@&\n    *"13"*) flag=true ;;\n    *"14"*) flag=true ;;@' make.sh
+              touch roms/13/Generic/DONTRESIGN
+              chmod +x make.sh
+              wc -l make.sh
+              grep -n 'flag=true' make.sh
       
        - name: Setting up ErfanGSI requirements
          run: |
