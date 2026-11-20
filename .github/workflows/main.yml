@@ -2,7 +2,7 @@ name: build
 
 on:
   workflow_dispatch
-    
+
 env:
   ROM_NAME: Generic
   BUILD_TYPE: ab
@@ -21,15 +21,15 @@ jobs:
 
        - name: Cleanup
          uses: rokibhasansagar/slimhub_actions@main
-           
+
        - name: Initialization environment
          run: |
             sudo apt-get update
             sudo apt-get install -y git wget aria2 zip unzip
-      
+
        - name: Clone ErfanGSI Source Code
          run: git clone --recurse-submodules https://github.com/mi20210630/ErfanGSIs.git ErfanGSIs
-         
+
        - name: Fix exit
          run: |
               cd $GITHUB_WORKSPACE/ErfanGSIs
@@ -40,10 +40,10 @@ jobs:
               curl -sL https://raw.githubusercontent.com/erfanoabdi/ErfanGSIs/master/make.sh -o make.sh
               sed -i 's@^    \*"12"\*) flag=true ;;@&\n    *"13"*) flag=true ;;\n    *"14"*) flag=true ;;@' make.sh
               touch roms/13/Generic/DONTRESIGN
+              python3 -c "import re; s=open('make.sh').read(); s=re.sub(r'^systemsize=.*$', 'systemsize=$(( $(du -sk $systemdir | cut -f1) * 110 / 100 / 40960 * 40960 ) * 1024 ))', s, flags=re.M); open('make.sh','w').write(s); print('SIZEPATCH OK')"
               chmod +x make.sh
-              wc -l make.sh
-              grep -n 'flag=true' make.sh
-      
+              grep -n 'systemsize=' make.sh
+
        - name: Setting up ErfanGSI requirements
          run: |
               cd $GITHUB_WORKSPACE/ErfanGSIs
@@ -54,7 +54,7 @@ jobs:
               sudo pip3 install --break-system-packages backports.lzma || true
               echo 'PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python' >> $GITHUB_ENV
               sudo python3 -c 'from google.protobuf import descriptor; print("PROTO_ROOT_OK")'
-              
+
        - name: Download Stock Rom & Generate GSI
          run: |
              cd $GITHUB_WORKSPACE/ErfanGSIs
@@ -64,8 +64,8 @@ jobs:
              ls -la rom.zip
              sudo bash ./url2GSI.sh -c --$BUILD_TYPE $GITHUB_WORKSPACE/ErfanGSIs/rom.zip $ROM_NAME
              ls -la output/
-      
-       - name: Zip GSI  
+
+       - name: Zip GSI
          run: |
               touch info.txt
               echo "Generic MTK A13 build by stairyTOM" >>info.txt
@@ -78,8 +78,8 @@ jobs:
               else
                   mv GSI.zip upload/
               fi
-              ls "upload"                  
-              
+              ls "upload"
+
        - name: Upload GSI to release
          uses: ncipollo/release-action@v1.8.6
          with:
