@@ -71,8 +71,7 @@ jobs:
              cat part00.bin part01.bin part02.bin part03.bin part04.bin part05.bin part06.bin part07.bin part08.bin part09.bin part10.bin part11.bin > rom.zip
              ls -la rom.zip
              sudo bash ./url2GSI.sh -c --$BUILD_TYPE $GITHUB_WORKSPACE/ErfanGSIs/rom.zip $ROM_NAME
-             cat $GITHUB_WORKSPACE/ErfanGSIs/tmp/mkimage.log || true
-             ls -la output/ $GITHUB_WORKSPACE/ErfanGSIs/tmp/
+             ls -la output/
 
        - name: Zip GSI
          run: |
