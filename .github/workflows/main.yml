@@ -11,6 +11,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
@@ -38,9 +40,10 @@ jobs:
               cd $GITHUB_WORKSPACE/ErfanGSIs
               mkdir ./output
               sudo apt-get install -y unace unrar zip unzip p7zip-full p7zip-rar sharutils rar uudeview mpack arj cabextract file-roller device-tree-compiler liblzma-dev python3-pip brotli liblz4-tool gawk aria2 || true
-              pip3 install --break-system-packages backports.lzma protobuf==3.20.0 pycryptodome || true
-              pip3 install backports.lzma protobuf==3.20.0 pycryptodome || true
-              echo done
+              pip3 install --break-system-packages protobuf==3.20.0 || pip3 install --break-system-packages protobuf
+              pip3 install --break-system-packages pycryptodome || true
+              pip3 install --break-system-packages backports.lzma || true
+              python3 -c 'from google.protobuf import descriptor; print("PROTO_OK")'
               
        - name: Download Stock Rom & Generate GSI
          run: |
@@ -50,6 +53,7 @@ jobs:
              cat part00.bin part01.bin part02.bin part03.bin part04.bin part05.bin part06.bin part07.bin part08.bin part09.bin part10.bin part11.bin > rom.zip
              ls -la rom.zip
              sudo bash ./url2GSI.sh -c --$BUILD_TYPE $GITHUB_WORKSPACE/ErfanGSIs/rom.zip $ROM_NAME
+             ls -la output/
       
        - name: Zip GSI  
          run: |
