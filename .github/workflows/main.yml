@@ -43,7 +43,7 @@ jobs:
               curl -sL https://raw.githubusercontent.com/erfanoabdi/ErfanGSIs/master/make.sh -o make.sh
               sed -i 's@^    \*"12"\*) flag=true ;;@&\n    *"13"*) flag=true ;;\n    *"14"*) flag=true ;;@' make.sh
               touch roms/13/Generic/DONTRESIGN
-              python3 -c "print('a')" && echo "\$(( \$(du) ))"
+              python3 -c "import re; s=open('make.sh').read(); s=re.sub(r'^systemsize=.*$', 'systemsize=\$(( \$(du -sk \$systemdir | cut -f1) * 110 / 100 / 40960 * 40960 * 1024 ))', s, flags=re.M); open('make.sh','w').write(s); print('SIZEPATCH OK')"
               chmod +x make.sh
               grep -n 'systemsize=' make.sh
               bash -n make.sh && echo "MAKE.SH SYNTAX OK"
