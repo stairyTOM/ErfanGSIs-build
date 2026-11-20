@@ -42,11 +42,12 @@ jobs:
          run: |
               cd $GITHUB_WORKSPACE/ErfanGSIs
               mkdir ./output
+              sudo apt-get install -y liblzma-dev python3-dev build-essential || true
               sudo apt-get install -y unace unrar zip unzip p7zip-full p7zip-rar sharutils rar uudeview mpack arj cabextract file-roller device-tree-compiler liblzma-dev python3-pip brotli liblz4-tool gawk aria2 || true
-              sudo pip3 install --break-system-packages protobuf==3.20.0 pycryptodome backports.lzma || sudo pip3 install --break-system-packages protobuf pycryptodome backports.lzma || true
+              sudo pip3 install --break-system-packages protobuf==3.20.0 pycryptodome || sudo pip3 install --break-system-packages protobuf pycryptodome || true
+              sudo pip3 install --break-system-packages backports.lzma || true
               echo 'PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python' >> $GITHUB_ENV
               sudo python3 -c 'from google.protobuf import descriptor; print("PROTO_ROOT_OK")'
-              python3 -c 'from google.protobuf import descriptor; print("PROTO_USER_OK")'
               
        - name: Download Stock Rom & Generate GSI
          run: |
